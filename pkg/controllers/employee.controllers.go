@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/vimalkuriensam/go-employees-test/pkg/config"
 	"github.com/vimalkuriensam/go-employees-test/pkg/models"
 	"github.com/vimalkuriensam/go-employees-test/pkg/services"
@@ -42,16 +43,27 @@ func (e *employee) CreateEmployees(w http.ResponseWriter, req *http.Request) {
 		cfg.ErrorJSON(w, req.URL.Path, err.Error(), http.StatusBadRequest)
 		return
 	}
-	id, err := e.service.AddEmployee(*employee, cfg.DataBase.Collections["employee"])
+	id, err := e.service.AddEmployee(*employee)
 	if err != nil {
 		cfg.ErrorJSON(w, req.URL.Path, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	employee.ID = id.InsertedID.(primitive.ObjectID).Hex()
-	cfg.WriteJSON(w, http.StatusCreated, employee, fmt.Sprintf("Log with id %s created", employee.ID))
+	cfg.WriteJSON(w, http.StatusCreated, employee, fmt.Sprintf("Employee with id %s created", employee.ID))
 }
 
-func (e *employee) GetEmployee(w http.ResponseWriter, req *http.Request) {}
+func (e *employee) GetEmployee(w http.ResponseWriter, req *http.Request) {
+	cfg := config.GetConfig()
+	id := chi.URLParam(req, "id")
+	var employee models.Employee = models.Employee{}
+	err := e.service.GetEmployee(id).Decode(&employee)
+	fmt.Println("employee", employee)
+	if err != nil {
+		cfg.ErrorJSON(w, req.URL.Path, err.Error(), http.StatusBadRequest)
+		return
+	}
+	cfg.WriteJSON(w, http.StatusOK, employee, fmt.Sprintf("Employee with id %v fetched successfully", id))
+}
 
 func (e *employee) UpdateEmployee(w http.ResponseWriter, req *http.Request) {}
 
