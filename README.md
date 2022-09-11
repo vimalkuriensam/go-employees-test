@@ -15,6 +15,29 @@ Run the project on docker compose.
   docker compose -f ./deployment/docker-compose.yml up -d --build
 ```
 
+## Environment Variables
+
+To run this project, you will need to add the following environment variables to
+either production.env or development.env in the deployment folder
+
+`port` *-web server port*
+
+`dsn` *-mongodb host and port eg: 127.0.0.1:27017*
+
+`db_user` *-mongodb username*
+
+`db_password` *-mongodb password*
+
+`db_database` *-mongodb database name*
+
+To run the database, you will need to add the following environment variables to
+mongo.env file in deployment folder.
+`MONGO_INITDB_ROOT_USERNAME` *-mongodb root username*
+
+`MONGO_INITDB_ROOT_PASSWORD` *-mongodb root password*
+
+`MONGO_INITDB_DATABASE` *-mongodb database name*
+
 ## Project Structure
 ```
 ├── cmd
