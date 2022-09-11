@@ -6,6 +6,7 @@ require github.com/spf13/viper v1.13.0
 
 require (
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
+	github.com/go-chi/chi v1.5.4
 	github.com/go-chi/chi/v5 v5.0.7 // indirect
 	github.com/go-chi/cors v1.2.1 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
