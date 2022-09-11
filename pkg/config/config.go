@@ -9,11 +9,13 @@ import (
 	"time"
 
 	"github.com/spf13/viper"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 var cfg *Config
 
 type Config struct {
+	DataBase *DataBase
 	Env      map[string]any
 	DataChan chan any
 	Logger   *log.Logger
@@ -36,6 +38,11 @@ type ErrorResponse struct {
 type ReadValue struct {
 	B []byte
 	D interface{}
+}
+
+type DataBase struct {
+	Client      *mongo.Client
+	Collections map[string]*mongo.Collection
 }
 
 func Initialize() *Config {

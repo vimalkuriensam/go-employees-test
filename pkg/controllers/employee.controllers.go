@@ -42,7 +42,7 @@ func (e *employee) CreateEmployees(w http.ResponseWriter, req *http.Request) {
 		cfg.ErrorJSON(w, req.URL.Path, err.Error(), http.StatusBadRequest)
 		return
 	}
-	id, err := e.service.AddEmployee(*employee)
+	id, err := e.service.AddEmployee(*employee, cfg.DataBase.Collections["employee"])
 	if err != nil {
 		cfg.ErrorJSON(w, req.URL.Path, err.Error(), http.StatusInternalServerError)
 		return
