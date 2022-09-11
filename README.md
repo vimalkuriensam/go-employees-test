@@ -15,6 +15,37 @@ Run the project on docker compose.
   docker compose -f ./deployment/docker-compose.yml up -d --build
 ```
 
+## Project Structure
+```
+├── cmd
+│   ├── api
+│        └── main.go // main file that initializes the app
+├── pkg 
+│   ├── config   
+│   │   ├── config.go
+|   |   ├── db.go  
+│   │   └── utilities.go
+|   ├── controllers
+│   │   └── employees.controllers.go
+|   ├── routes
+│   │   ├── routes.go
+│   │   └── employees.routes.go 
+|   ├── models
+│   │   └── employees.models.go  
+│   └── services
+|       ├── services.go  
+│       └── employees.services.go
+├── deployment
+│   ├── Dockerfile.prod
+│   └── docker-compose.yml
+├── environment
+│   ├── development.env
+│   ├── production.env
+│   └── mongo.env
+├── go.mod
+└── go.sum
+```
+
 
 ## API Reference
 
