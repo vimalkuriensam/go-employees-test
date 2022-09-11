@@ -47,6 +47,10 @@ type DataBase struct {
 
 func Initialize() *Config {
 	cfg = &Config{
+		DataBase: &DataBase{
+			Client:      nil,
+			Collections: make(map[string]*mongo.Collection),
+		},
 		Env:      make(map[string]any),
 		DataChan: make(chan any),
 		Logger:   log.New(os.Stdout, "", log.Ldate|log.Ltime),
