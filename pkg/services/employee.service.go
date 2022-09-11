@@ -55,5 +55,9 @@ func (e *employeeService) UpdateEmployee(id string, employee models.Employee) (*
 }
 
 func (e *employeeService) DeleteEmployee(id string) (*mongo.DeleteResult, error) {
-	return nil, nil
+	collection := config.GetConfig().DataBase.Collections["employees"]
+	docId, _ := primitive.ObjectIDFromHex(id)
+	ctx, cancelFunc := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancelFunc()
+	return collection.DeleteOne(ctx, bson.M{"_id": docId})
 }

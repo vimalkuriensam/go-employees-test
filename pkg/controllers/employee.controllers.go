@@ -84,6 +84,6 @@ func (e *employee) DeleteEmployee(w http.ResponseWriter, req *http.Request) {
 		DeleteCount: int(result.DeletedCount),
 		DeleteData:  employee,
 	}
-	message := fmt.Sprintf("Log with id %v deleted successfully", id)
+	message := fmt.Sprintf("Employee with id %v deleted successfully", id)
 	cfg.WriteJSON(w, http.StatusOK, deleteResult, message)
 }
