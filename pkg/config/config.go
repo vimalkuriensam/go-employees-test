@@ -33,6 +33,11 @@ type ErrorResponse struct {
 	Timestamp time.Time `json:"timestamp"`
 }
 
+type ReadValue struct {
+	B []byte
+	D interface{}
+}
+
 func Initialize() *Config {
 	cfg = &Config{
 		Env:           make(map[string]any),
