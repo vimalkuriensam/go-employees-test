@@ -1,4 +1,5 @@
 # Employee REST-API
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
 
 This project creates a rest-api server that deals with the basic CRUD operations of an
 employee. The project is created using golang and the database used is mongodb.
