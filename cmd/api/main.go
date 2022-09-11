@@ -18,6 +18,12 @@ func main() {
 	flag.Parse()
 	cfg := config.Initialize()
 	cfg.LoadEnvironment(env)
+	err := cfg.MongoConnect()
+	if err != nil {
+		cfg.Logger.Panic(err)
+	}
+	defer cfg.MongoDisconnect()
+	cfg.InsertMongoCollections("employees")
 	routes := routes.Routes()
 	cfg.Logger.Printf("Server is running on port %v", cfg.Env["port"])
 	cfg.Logger.Fatal(http.ListenAndServe(fmt.Sprintf(":%v", cfg.Env["port"]), routes))
