@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"time"
 )
 
 func (cfg *Config) ReadJSON(req *http.Request) error {
@@ -37,4 +38,19 @@ func (cfg *Config) WriteJSON(w http.ResponseWriter, status int, data interface{}
 	if b_data, err := json.Marshal(cfg.Response); err == nil {
 		w.Write(b_data)
 	}
+}
+
+func (cfg *Config) ErrorJSON(w http.ResponseWriter, path string, reason string, status ...int) {
+	errorStatus := http.StatusBadRequest
+	if len(status) > 0 {
+		errorStatus = status[0]
+	}
+	cfg.Logger.Println("error-reason: ", reason)
+	cfg.Error = &ErrorResponse{
+		Status:    errorStatus,
+		Path:      path,
+		Message:   reason,
+		Timestamp: time.Now(),
+	}
+	cfg.WriteJSON(w, errorStatus, cfg.Error, "Error")
 }

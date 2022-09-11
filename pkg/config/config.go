@@ -14,11 +14,11 @@ import (
 var cfg *Config
 
 type Config struct {
-	Env           map[string]any
-	DataChan      chan any
-	Logger        *log.Logger
-	Response      *JSONResponse
-	ErrorResponse *ErrorResponse
+	Env      map[string]any
+	DataChan chan any
+	Logger   *log.Logger
+	Response *JSONResponse
+	Error    *ErrorResponse
 }
 
 type JSONResponse struct {
@@ -29,7 +29,7 @@ type JSONResponse struct {
 type ErrorResponse struct {
 	Status    int       `json:"status"`
 	Path      string    `json:"path"`
-	Reason    string    `json:"reason"`
+	Message   string    `json:"message"`
 	Timestamp time.Time `json:"timestamp"`
 }
 
@@ -40,11 +40,11 @@ type ReadValue struct {
 
 func Initialize() *Config {
 	cfg = &Config{
-		Env:           make(map[string]any),
-		DataChan:      make(chan any),
-		Logger:        log.New(os.Stdout, "", log.Ldate|log.Ltime),
-		Response:      &JSONResponse{},
-		ErrorResponse: &ErrorResponse{},
+		Env:      make(map[string]any),
+		DataChan: make(chan any),
+		Logger:   log.New(os.Stdout, "", log.Ldate|log.Ltime),
+		Response: &JSONResponse{},
+		Error:    &ErrorResponse{},
 	}
 	return cfg
 }
