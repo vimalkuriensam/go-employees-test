@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"reflect"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/vimalkuriensam/go-employees-test/pkg/config"
@@ -64,7 +65,45 @@ func (e *employee) GetEmployee(w http.ResponseWriter, req *http.Request) {
 	cfg.WriteJSON(w, http.StatusOK, employee, fmt.Sprintf("Employee with id %v fetched successfully", id))
 }
 
-func (e *employee) UpdateEmployee(w http.ResponseWriter, req *http.Request) {}
+func (e *employee) UpdateEmployee(w http.ResponseWriter, req *http.Request) {
+	id := chi.URLParam(req, "id")
+	cfg := config.GetConfig()
+	var employee *models.Employee = &models.Employee{}
+	err := e.service.GetEmployee(id).Decode(employee)
+	var priorData models.Employee = *employee
+	if err != nil {
+		cfg.ErrorJSON(w, req.URL.Path, err.Error(), http.StatusBadRequest)
+		return
+	}
+	go cfg.ReadJSON(req)
+	data := (<-cfg.DataChan).(config.ReadValue)
+	err = services.AcceptableFields(data.D.(map[string]interface{}), services.AvailableFields["update"])
+	if err != nil {
+		cfg.ErrorJSON(w, req.URL.Path, err.Error(), http.StatusBadRequest)
+		return
+	}
+	for key, value := range data.D.(map[string]interface{}) {
+		field, err := services.GetStructFieldByTag(key, *employee)
+		if err != nil {
+			cfg.ErrorJSON(w, req.URL.Path, err.Error(), http.StatusBadRequest)
+			return
+		}
+		reflect.ValueOf(employee).Elem().FieldByName(field).Set(reflect.ValueOf(value))
+	}
+	result, err := e.service.UpdateEmployee(id, *employee)
+	if err != nil {
+		cfg.ErrorJSON(w, req.URL.Path, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	updateResult := models.EmployeeUpdateData{
+		ID:           id,
+		UpdateCount:  int(result.ModifiedCount),
+		PreviousData: priorData,
+		UpdatedData:  *employee,
+	}
+	message := fmt.Sprintf("Employee with id %v updated successfully", id)
+	cfg.WriteJSON(w, http.StatusOK, updateResult, message)
+}
 
 func (e *employee) DeleteEmployee(w http.ResponseWriter, req *http.Request) {
 	id := chi.URLParam(req, "id")

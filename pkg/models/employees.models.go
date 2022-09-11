@@ -18,3 +18,10 @@ type EmployeeDeleteData struct {
 	DeleteCount int      `json:"deleteCount"`
 	DeleteData  Employee `json:"deleteData"`
 }
+
+type EmployeeUpdateData struct {
+	ID           string   `json:"id"`
+	UpdateCount  int      `json:"updateCount"`
+	PreviousData Employee `json:"previousData"`
+	UpdatedData  Employee `json:"updatedData"`
+}
