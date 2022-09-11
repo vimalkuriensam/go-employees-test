@@ -51,7 +51,18 @@ func (e *employeeService) GetEmployee(id string) *mongo.SingleResult {
 }
 
 func (e *employeeService) UpdateEmployee(id string, employee models.Employee) (*mongo.UpdateResult, error) {
-	return nil, nil
+	collection := config.GetConfig().DataBase.Collections["employees"]
+	docId, _ := primitive.ObjectIDFromHex(id)
+	ctx, cancelFunc := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancelFunc()
+	return collection.UpdateByID(ctx, docId, bson.D{
+		primitive.E{Key: "$set", Value: bson.D{
+			primitive.E{Key: "name", Value: employee.Name},
+			primitive.E{Key: "age", Value: employee.Age},
+			primitive.E{Key: "email", Value: employee.Email},
+			primitive.E{Key: "update_at", Value: time.Now()},
+		}},
+	})
 }
 
 func (e *employeeService) DeleteEmployee(id string) (*mongo.DeleteResult, error) {
