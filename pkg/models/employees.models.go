@@ -12,3 +12,9 @@ type Employee struct {
 	CreatedAt time.Time `bson:"created_at,omitempty" json:"created_at,omitempty"`
 	UpdatedAt time.Time `bson:"updated_at,omitempty" json:"updated_at,omitempty"`
 }
+
+type EmployeeDeleteData struct {
+	ID          string   `json:"id"`
+	DeleteCount int      `json:"deleteCount"`
+	DeleteData  Employee `json:"deleteData"`
+}

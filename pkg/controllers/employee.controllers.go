@@ -57,7 +57,6 @@ func (e *employee) GetEmployee(w http.ResponseWriter, req *http.Request) {
 	id := chi.URLParam(req, "id")
 	var employee models.Employee = models.Employee{}
 	err := e.service.GetEmployee(id).Decode(&employee)
-	fmt.Println("employee", employee)
 	if err != nil {
 		cfg.ErrorJSON(w, req.URL.Path, err.Error(), http.StatusBadRequest)
 		return
@@ -67,4 +66,24 @@ func (e *employee) GetEmployee(w http.ResponseWriter, req *http.Request) {
 
 func (e *employee) UpdateEmployee(w http.ResponseWriter, req *http.Request) {}
 
-func (e *employee) DeleteEmployee(w http.ResponseWriter, req *http.Request) {}
+func (e *employee) DeleteEmployee(w http.ResponseWriter, req *http.Request) {
+	id := chi.URLParam(req, "id")
+	cfg := config.GetConfig()
+	var employee models.Employee = models.Employee{}
+	if err := e.service.GetEmployee(id).Decode(&employee); err != nil {
+		cfg.ErrorJSON(w, req.URL.Path, err.Error(), http.StatusBadRequest)
+		return
+	}
+	result, err := e.service.DeleteEmployee(id)
+	if err != nil {
+		cfg.ErrorJSON(w, req.URL.Path, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	deleteResult := models.EmployeeDeleteData{
+		ID:          id,
+		DeleteCount: int(result.DeletedCount),
+		DeleteData:  employee,
+	}
+	message := fmt.Sprintf("Log with id %v deleted successfully", id)
+	cfg.WriteJSON(w, http.StatusOK, deleteResult, message)
+}
