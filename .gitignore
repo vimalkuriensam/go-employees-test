@@ -1,5 +1,6 @@
 *.env
 /deployment/db-data
+tmp
 
 *.cgo1.go
 *.cgo2.c
