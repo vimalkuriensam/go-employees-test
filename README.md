@@ -33,6 +33,7 @@ either production.env or development.env in the deployment folder
 
 To run the database, you will need to add the following environment variables to
 mongo.env file in deployment folder.
+
 `MONGO_INITDB_ROOT_USERNAME` *-mongodb root username*
 
 `MONGO_INITDB_ROOT_PASSWORD` *-mongodb root password*
