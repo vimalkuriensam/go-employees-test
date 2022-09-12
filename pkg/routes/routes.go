@@ -7,6 +7,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
+	"github.com/go-chi/httplog"
 	"github.com/go-chi/httprate"
 )
 
@@ -21,8 +22,12 @@ func Routes() http.Handler {
 		AllowCredentials: true,
 		MaxAge:           300,
 	}))
+	logger := httplog.NewLogger("gochi.log", httplog.Options{
+		JSON: true,
+	})
 	mux.Use(middleware.Heartbeat("/ping"))
 	mux.Use(middleware.Logger)
+	mux.Use(httplog.RequestLogger(logger))
 	mux.Use(middleware.Recoverer)
 	mux.Use(middleware.Timeout(2500 * time.Millisecond))
 	mux.Use(middleware.Throttle(1))
