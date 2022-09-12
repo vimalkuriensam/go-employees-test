@@ -6,14 +6,31 @@ employee. The project is created using golang and the database used is mongodb.
 
 ## Run the app
 
-Run the project with go version 1.18
+#### Run the project with go version 1.18
 
 ```bash
   go run ./cmd/main/. 
 ```
-Run the project on docker compose.
+#### Run the project on docker compose.
 ```bash
   docker compose -f ./deployment/docker-compose.yml up -d --build
+```
+#### Run the project with makefile
+Run the docker compose file
+```bash
+  make up
+```
+Remove the existing containers and rebuild the apps
+```bash
+  make up_build
+```
+Stop the running containers
+```bash
+  make down
+```
+Create a binary file
+```bash
+  make build_employees
 ```
 
 ## Environment Variables
@@ -33,6 +50,7 @@ either production.env or development.env in the deployment folder
 
 To run the database, you will need to add the following environment variables to
 mongo.env file in deployment folder.
+
 `MONGO_INITDB_ROOT_USERNAME` *-mongodb root username*
 
 `MONGO_INITDB_ROOT_PASSWORD` *-mongodb root password*
