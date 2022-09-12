@@ -3,6 +3,7 @@ package config
 import (
 	"context"
 	"fmt"
+	"math"
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -17,16 +18,27 @@ func (app *Config) MongoConnect() error {
 	pass := app.Env["db_password"].(string)
 	host := app.Env["dsn"].(string)
 	dsn := fmt.Sprintf("mongodb://%v:%v@%v/?maxPoolSize=20&w=majority", user, pass, host)
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI(dsn))
-	if err != nil {
-		return err
+	var counts int
+	var err error
+	var client *mongo.Client
+	for {
+		client, err = mongo.Connect(ctx, options.Client().ApplyURI(dsn))
+		if err != nil {
+			app.Logger.Print("Db not connected yet! Retrying...")
+			counts++
+			time.Sleep(time.Duration(math.Pow(float64(counts), 2)) * time.Second)
+		} else {
+			app.DataBase.Client = client
+			if err = app.DataBase.Client.Ping(ctx, readpref.Primary()); err != nil {
+				return err
+			}
+			app.Logger.Print("Db connected and pinged...")
+			return nil
+		}
+		if counts > 10 {
+			return err
+		}
 	}
-	app.DataBase.Client = client
-	if err = app.DataBase.Client.Ping(ctx, readpref.Primary()); err != nil {
-		return err
-	}
-	app.Logger.Print("Db connected and pinged...")
-	return nil
 }
 
 func (app *Config) MongoDisconnect() {

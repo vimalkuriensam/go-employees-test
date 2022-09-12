@@ -1,4 +1,5 @@
 EMPLOYEES_BINARY=employeesApp
+cwd  := $(shell pwd)
 
 ## up: starts all containers in the background without forcing build
 up:
@@ -16,7 +17,7 @@ up_build: build_employees
 
 build_employees:
 	@echo "Building employees binary..."
-	env GOOS=linux CGO_ENABLED=0 go build -o ${EMPLOYEES_BINARY} ./cmd/api/*.go
+	go build -o ${EMPLOYEES_BINARY} ./cmd/api/.
 	@echo "Done!"
 
 ## down: stop docker compose

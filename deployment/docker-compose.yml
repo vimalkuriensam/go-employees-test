@@ -6,7 +6,8 @@ services:
     build: 
       context: ../
       dockerfile: ./deployment/Dockerfile.prod
-    command: -envflag=production
+    command:
+      - -envflag=production
     env_file:
       - ../environment/production.env
     restart: always
